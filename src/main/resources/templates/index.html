@@ -1,0 +1,79 @@
+<html>
+<head>
+<title>Shopping Store Demo</title>
+<style>
+caption {
+	text-align: left;
+    font-size: larger;
+    font-family: sans-serif;
+    color: blue;
+}
+table {
+  font-family: arial, sans-serif;
+  border-collapse: collapse;
+  width: 50%;
+  margin-top: 20px;
+}
+
+td, th {
+  border: 1px solid #dddddd;
+  text-align: left;
+  padding: 8px;
+}
+
+tr:nth-child(even) {
+  background-color: #dddddd;
+}
+</style>
+</head>
+
+<body>
+<h2>Welcome to the store!!!</h2>
+<button id="loadProds" onclick="loadDoc()"> Click here to view the Products List</button>
+<div id="prodsTable"></div>
+</body>
+
+<script>
+function loadDoc() {
+	  var xhttp = new XMLHttpRequest();
+	  xhttp.onreadystatechange = function() {
+	    if (this.readyState == 4 && this.status == 200) {
+	      document.getElementById("loadProds").style.display = "none";
+	      var prodsTable = document.getElementById("prodsTable");
+	      var ro = JSON.parse(this.responseText);
+	      var html = "<table> <caption>Product List</caption>";
+	      html += "<tr> <th> Product Id </th> <th> Name </th> <th> Price </th> <th> Code </th> <th/> </tr>";
+	      for(i=0;i < ro.length;i++) {
+	    	  html += "<tr>";
+	    	  html += "<td>" + ro[i]["id"] + "</td>";
+	    	  html += "<td>" + ro[i]["name"] + "</td>";
+	    	  html += "<td>" + ro[i]["price"] + "</td>";
+	    	  html += "<td>" + ro[i]["code"] + "</td>";
+	    	  html += "<td> <button id='" + ro[i]["code"] + "' onclick = 'placeOrder()' > Buy </button> </td>";
+	    	  html += "</tr>";
+	    	}
+	      html += "</table>";
+	      
+	      prodsTable.innerHTML = html;
+	    }
+	  };
+	  xhttp.open("GET", "http://localhost:8081/product/findAll", true);
+	  xhttp.send();
+	}
+	
+	function placeOrder() {
+		var x = event.target;
+		var xhttp = new XMLHttpRequest();
+		xhttp.open("POST", "http://localhost:8081/customer/placeOrder", true);
+		xhttp.setRequestHeader("Content-type", "application/json");
+		xhttp.send(JSON.stringify({"custId":"3", "productList":[x.id] }));
+		
+		xhttp.onreadystatechange = function () {
+		    if (this.readyState == 4) {
+		       alert(this.responseText);
+		    }
+		};
+	}
+</script>
+
+</html>
