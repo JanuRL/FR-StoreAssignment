@@ -21,7 +21,7 @@ http://localhost:8081/customer/findAll
 http://localhost:8081/customer/requestOrder
 {
   "custId":3,
-  "productList":["mbl","ltp"]
+  "productList":["mbl"]
 }
 Response:
 Ok
